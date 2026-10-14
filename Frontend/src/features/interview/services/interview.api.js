@@ -4,6 +4,8 @@ import axios from "axios"
     baseURL: "http://localhost:3000",
     withCredentials: true,
  })
+ const API_URL = import.meta.env.VITE_API_URL;
+ fetch(`${API_URL}/your-existing-api-route`);
 
  export const generateInterviewReport = async ({jobDescription , selfDescription ,resumeFile}) => {
     const formData = new FormData()
