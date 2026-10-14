@@ -5,7 +5,6 @@ const cors = require('cors')
 
 app.use(express.json());
 
-
 // Catch invalid JSON syntax errors in request bodies
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
@@ -21,7 +20,9 @@ app.use(cors({
 }));
 
 const authRouter = require("../src/routes/auth.routes");
+const interviewRouter = require("../src/routes/interview.routes");
 
 app.use("/api/auth", authRouter);
+app.use("/api/interview",interviewRouter);
 
 module.exports = app;

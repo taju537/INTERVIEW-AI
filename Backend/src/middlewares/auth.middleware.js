@@ -25,6 +25,9 @@ async function authUser (req , res , next){
         const decoded = jwt.verify(token , process.env.JWT_SECRET)
 
         req.user = decoded
+        if (!req.user._id && req.user.id) {
+            req.user._id = req.user.id
+        }
 
         next()
 
