@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.set("trust proxy", 1);
 const cookieParser = require("cookie-parser");
 const cors = require('cors')
 
@@ -16,10 +17,11 @@ app.use((err, req, res, next) => {
 app.use(cookieParser());
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || origin.startsWith("http://localhost:") || origin.endsWith(".vercel.app") || origin === process.env.FRONTEND_URL) {
+        const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, "") : null;
+        if (!origin || origin.startsWith("http://localhost:") || origin.endsWith(".vercel.app") || origin === frontendUrl) {
             return callback(null, true);
         }
-        return callback(new Error("Not allowed by CORS"));
+        return callback(null, false);
     },
     credentials: true
 }));
