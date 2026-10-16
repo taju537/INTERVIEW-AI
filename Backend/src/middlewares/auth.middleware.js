@@ -3,7 +3,15 @@ const tokenBlacklistModel =require("../models/blacklist.model")
 
 
 async function authUser (req , res , next){
-    const token = req.cookies.token
+    let token = req.cookies.token;
+
+    if (!token && req.headers.authorization) {
+        if (req.headers.authorization.startsWith("Bearer ")) {
+            token = req.headers.authorization.slice(7).trim();
+        } else {
+            token = req.headers.authorization.trim();
+        }
+    }
 
     if(!token){
         return res.status(401).json({

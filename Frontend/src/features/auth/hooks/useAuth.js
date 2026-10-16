@@ -12,6 +12,9 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await login({ email, password });
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
       const userData = data?.user || (data?.id || data?.username ? { id: data.id, username: data.username, email: data.email } : null);
       if (userData) {
         setUser(userData);
@@ -28,6 +31,9 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await register({ username, email, password });
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
       const userData = data?.user || (data?.id || data?.username ? { id: data.id, username: data.username, email: data.email } : null);
       if (userData) {
         setUser(userData);
@@ -44,8 +50,11 @@ export const useAuth = () => {
     setLoading(true);
     try {
       await logout();
+      localStorage.removeItem("token");
       setUser(null);
     } catch (err) {
+      localStorage.removeItem("token");
+      setUser(null);
       throw err;
     } finally {
       setLoading(false);
@@ -55,13 +64,18 @@ export const useAuth = () => {
       const getAndSetUser = async () => {
         try {
           const data = await getMe(); 
+          if (data?.user) {
             setUser(data.user);
+          } else {
+            setUser(null);
           }
-          catch (err) {
+        }
+        catch (err) {
+          setUser(null);
         } finally {
           setLoading(false);
         }
-        } 
+      } 
       
       getAndSetUser();
   }, [setUser, setLoading]);
