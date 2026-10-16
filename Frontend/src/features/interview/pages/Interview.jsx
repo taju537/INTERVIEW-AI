@@ -109,7 +109,17 @@ const Interview = () => {
                                 setDownloading(true)
                                 await getResumePdf(interviewId)
                             } catch (err) {
-                                alert("Failed to download resume PDF. Please try again.")
+                                let msg = "Failed to download resume PDF. Please try again."
+                                if (err.response?.data instanceof Blob) {
+                                    try {
+                                        const text = await err.response.data.text()
+                                        const json = JSON.parse(text)
+                                        msg = json.error || json.message || msg
+                                    } catch {}
+                                } else if (err.response?.data?.message) {
+                                    msg = err.response.data.message
+                                }
+                                alert(msg)
                             } finally {
                                 setDownloading(false)
                             }
